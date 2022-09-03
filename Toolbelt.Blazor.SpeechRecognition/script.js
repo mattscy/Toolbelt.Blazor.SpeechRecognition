@@ -5,13 +5,18 @@ var Toolbelt;
     (function (Blazor) {
         var SpeechRecognitionProxy;
         (function (SpeechRecognitionProxy) {
+            var grammarList = null;
             var speechRecognition = null;
             var dotnetObjRef = null;
+            var grammar = "@JSGF V1.0; grammar fruit; public <fruit> = apple | pear | banana | lemon | strawberry | blueberry | pineapple ;";
             function attach(objRef) {
                 dotnetObjRef = objRef;
                 var TSpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
                 if (speechRecognition === null && typeof (TSpeechRecognition) !== 'undefined') {
                     speechRecognition = new TSpeechRecognition();
+                    grammarList = new SpeechGrammarList();
+                    grammarList.addFromString(grammar, 1);
+                    speechRecognition.grammars = grammarList;
                     speechRecognition.onresult = function (ev) {
                         var results = [];
                         for (var i = 0; i < ev.results.length; i++) {

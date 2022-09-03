@@ -9,14 +9,20 @@ interface DotNetObjectRef {
 
 namespace Toolbelt.Blazor.SpeechRecognitionProxy {
 
+    let grammarList: SpeechGrammarList | null = null;
     let speechRecognition: SpeechRecognition | null = null;
     let dotnetObjRef: DotNetObjectRef | null = null;
+
+    const grammar = "@JSGF V1.0; grammar fruit; public <fruit> = apple | pear | banana | lemon | strawberry | blueberry | pineapple ;";
 
     export function attach(objRef: DotNetObjectRef): boolean {
         dotnetObjRef = objRef;
         const TSpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
         if (speechRecognition === null && typeof (TSpeechRecognition) !== 'undefined') {
             speechRecognition = new TSpeechRecognition();
+            grammarList = new SpeechGrammarList();
+            grammarList.addFromString(grammar, 1);
+            speechRecognition.grammars = grammarList;
 
             speechRecognition.onresult = (ev) => {
                 const results = [] as any[];
